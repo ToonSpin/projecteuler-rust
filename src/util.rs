@@ -38,11 +38,15 @@ impl Int for i128 {}
 
 pub struct Primer<T: UnsignedInt> {
     primes: Vec<T>,
+    iter_index: usize,
 }
 
 impl<T: UnsignedInt> Primer<T> {
     pub fn new() -> Primer<T> {
-        Primer { primes: Vec::new() }
+        Primer {
+            primes: Vec::new(),
+            iter_index: 0,
+        }
     }
 
     fn prime_test_against_vec(n: T, primes: &Vec<T>) -> bool {
@@ -73,11 +77,54 @@ impl<T: UnsignedInt> Primer<T> {
             next_prime = next_prime + 4.into();
         }
 
-        Primer { primes }
+        Primer {
+            primes,
+            iter_index: 0,
+        }
     }
 
     pub fn get_primes(self) -> Vec<T> {
         self.primes.clone()
+    }
+
+    pub fn iter(self) -> Primer<T> {
+        self
+    }
+}
+
+impl<T: UnsignedInt> std::iter::Iterator for Primer<T> {
+    type Item = T;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        let result = if self.iter_index < self.primes.len() {
+            self.primes[self.iter_index]
+        } else {
+            let next_prime = if self.primes.len() == 0 {
+                2.into()
+            } else if self.primes.len() == 1 {
+                3.into()
+            } else {
+                let mut candidate = *self.primes.last().unwrap();
+                loop {
+                    if candidate % 6.into() == 1.into() {
+                        candidate = candidate + 4.into();
+                    } else {
+                        candidate = candidate + 2.into();
+                    }
+
+                    if Self::prime_test_against_vec(candidate, &self.primes) {
+                        break;
+                    }
+                }
+                candidate
+            };
+
+            self.primes.push(next_prime);
+            next_prime
+        };
+
+        self.iter_index += 1;
+        Some(result)
     }
 }
 
