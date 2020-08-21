@@ -6,27 +6,12 @@
 
 use std::collections::HashMap;
 
+use projecteuler::util::Primer;
+
 fn main() {
-    let mut primes: Vec<u64> = vec![2];
+    let primer = Primer::init_with_max_value(20u64);
+    let primes = primer.get_primes();
     let mut min_factors: HashMap<u64, u64> = HashMap::new();
-    let mut next_prime = 3;
-
-    while next_prime <= 20 {
-        let mut not_prime = false;
-
-        for p in primes.iter() {
-            if next_prime % *p == 0 {
-                not_prime = true;
-                break;
-            }
-        }
-
-        if !not_prime {
-            primes.push(next_prime);
-        }
-
-        next_prime += 2;
-    }
 
     for p in primes.iter() {
         min_factors.insert(*p, 0);

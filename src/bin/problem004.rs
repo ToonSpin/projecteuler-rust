@@ -3,16 +3,7 @@
 //
 // Find the largest palindrome made from the product of two 3-digit numbers.
 
-fn is_palindromic(n: u32) -> bool {
-    let digits = get_digits(n);
-    let max = digits.len() / 2 + 1;
-    for i in 0..max {
-        if digits[i] != digits[digits.len() - 1 - i] {
-            return false;
-        }
-    }
-    true
-}
+use projecteuler::util::is_palindromic;
 
 fn is_product_of_3d_pair(n: u32) -> bool {
     let upper_bound = (n as f32).sqrt().ceil() as u32;
@@ -26,15 +17,6 @@ fn is_product_of_3d_pair(n: u32) -> bool {
         factor += 1;
     }
     false
-}
-
-fn get_digits(mut n: u32) -> Vec<u32> {
-    let mut digits = Vec::new();
-    while n > 0 {
-        digits.push(n % 10);
-        n /= 10;
-    }
-    digits
 }
 
 fn main() {
