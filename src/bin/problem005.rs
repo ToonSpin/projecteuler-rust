@@ -6,7 +6,7 @@
 
 use std::collections::HashMap;
 
-use projecteuler::util::Primer;
+use projecteuler::util::primer::Primer;
 
 fn main() {
     let primer = Primer::init_with_max_value(20u64);

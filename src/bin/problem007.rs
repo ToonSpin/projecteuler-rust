@@ -1,4 +1,4 @@
-use projecteuler::util::Primer;
+use projecteuler::util::primer::Primer;
 
 fn main() {
     let primer: Primer<u32> = Primer::new();
