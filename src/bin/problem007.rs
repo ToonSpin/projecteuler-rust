@@ -1,3 +1,5 @@
+// What is the 10 001st prime number?
+
 use projecteuler::util::primer::Primer;
 
 fn main() {
