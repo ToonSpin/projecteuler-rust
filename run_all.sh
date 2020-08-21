@@ -1,5 +1,6 @@
 #!/bin/bash
 
 for program in ./target/release/problem???; do
-    "$program"
+    echo -n "${program:24:3} "
+    "${program}"
 done
