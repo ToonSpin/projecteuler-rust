@@ -2,6 +2,7 @@ pub trait UnsignedInt:
     From<u8>
     + PartialOrd
     + std::ops::Add<Output = Self>
+    + std::ops::Mul<Output = Self>
     + std::ops::Div<Output = Self>
     + std::ops::Rem<Output = Self>
     + Copy
@@ -18,6 +19,7 @@ pub trait Int:
     From<u8>
     + PartialOrd
     + std::ops::Add<Output = Self>
+    + std::ops::Mul<Output = Self>
     + std::ops::Div<Output = Self>
     + std::ops::Rem<Output = Self>
     + Copy
@@ -43,25 +45,32 @@ impl<T: UnsignedInt> Primer<T> {
         Primer { primes: Vec::new() }
     }
 
+    fn prime_test_against_vec(n: T, primes: &Vec<T>) -> bool {
+        for p in primes.iter() {
+            if *p * *p > n {
+                break;
+            }
+            if n % *p == 0.into() {
+                return false;
+            }
+        }
+        true
+    }
+
     pub fn init_with_max_value(max_value: T) -> Primer<T> {
-        let mut primes: Vec<T> = vec![2.into()];
-        let mut next_prime: T = 3.into();
+        let mut primes: Vec<T> = vec![2.into(), 3.into()];
+        let mut next_prime: T = 5.into();
 
         while next_prime <= max_value {
-            let mut not_prime = false;
-
-            for p in primes.iter() {
-                if next_prime % *p == 0.into() {
-                    not_prime = true;
-                    break;
-                }
-            }
-
-            if !not_prime {
+            if Self::prime_test_against_vec(next_prime, &primes) {
                 primes.push(next_prime);
             }
-
             next_prime = next_prime + 2.into();
+
+            if Self::prime_test_against_vec(next_prime, &primes) {
+                primes.push(next_prime);
+            }
+            next_prime = next_prime + 4.into();
         }
 
         Primer { primes }
