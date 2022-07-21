@@ -4,5 +4,6 @@ use projecteuler::util::primer::Primer;
 
 fn main() {
     let primer: Primer<u64> = Primer::new();
-    println!("{}", primer.iter().take_while(|&i| i < 2_000_000).sum::<u64>());
+    let sum: u64 = primer.iter().take_while(|&i| i < 2_000_000).sum();
+    println!("The sum of all the primes below two million is: {}", sum);
 }
