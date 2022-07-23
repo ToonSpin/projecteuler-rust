@@ -51,6 +51,10 @@ impl<T: UnsignedInt> Primer<T> {
         self.primes.clone()
     }
 
+    pub fn reset(&mut self) -> () {
+        self.iter_index = 0;
+    }
+
     pub fn iter(self) -> Primer<T> {
         self
     }
@@ -90,4 +94,23 @@ impl<T: UnsignedInt> std::iter::Iterator for Primer<T> {
         self.iter_index += 1;
         Some(result)
     }
+}
+
+pub fn prime_factorization<T: UnsignedInt>(mut n: T, primer: &mut Primer<T>) -> Vec<(T, usize)> {
+    let mut v = Vec::new();
+    primer.reset();
+    for p in primer {
+        if n <= 1.into() {
+            break;
+        }
+        let mut p_count = 0;
+        while n % p == 0.into() {
+            n = n / p;
+            p_count += 1;
+        }
+        if p_count > 0 {
+            v.push((p, p_count));
+        }
+    }
+    v
 }
