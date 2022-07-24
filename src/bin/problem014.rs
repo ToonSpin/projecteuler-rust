@@ -1,12 +1,11 @@
-use std::collections::hash_map::Entry::Occupied;
 use std::collections::HashMap;
 
 fn collatz(start: u64, memo: &mut HashMap<u64, u64>) -> u64 {
     if start == 1 {
         return 1;
     }
-    if let Occupied(n) = memo.entry(start) {
-        return *n.get();
+    if memo.contains_key(&start) {
+        return *memo.get(&start).unwrap();
     }
     let result = 1 + if start % 2 == 0 {
         collatz(start / 2, memo)
