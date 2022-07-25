@@ -1,3 +1,4 @@
+pub mod maxpathsum;
 pub mod primer;
 
 pub trait UnsignedInt:
