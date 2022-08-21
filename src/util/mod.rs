@@ -1,3 +1,4 @@
+pub mod digitalnumber;
 pub mod maxpathsum;
 pub mod primer;
 

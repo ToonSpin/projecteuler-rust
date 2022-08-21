@@ -1,60 +1,7 @@
 // Work out the first ten digits of the sum of the following one-hundred 50-digit numbers.
 
-use std::collections::VecDeque;
-
-struct Number {
-    digits: Vec<u8>,
-}
-
-impl Number {
-    fn new(s: &str) -> Self {
-        let mut digits = VecDeque::new();
-        for digit in s.as_bytes() {
-            digits.push_front(*digit - '0' as u8);
-        }
-        Self {
-            digits: Vec::from(digits)
-        }
-    }
-
-    fn add_number(self: &Self, other: &Self) -> Self {
-        let mut new_digits = Vec::new();
-
-        // make sure self has as least as many elements as other
-        if self.digits.len() < other.digits.len() {
-            return other.add_number(&self);
-        }
-
-        // simply add the numbers
-        for (i, digit) in self.digits.iter().enumerate() {
-            let other_digit: u8 = match other.digits.get(i) {
-                Some(&d) => d,
-                None => 0,
-            };
-            new_digits.push(digit + other_digit);
-        }
-
-        // make the digits carry over for all digits > 9
-        let mut carry = 0;
-        for digit in new_digits.iter_mut() {
-            let new_digit = *digit + carry;
-            *digit = new_digit % 10;
-            carry = (new_digit - *digit) / 10;
-        }
-
-        // add any "leftover" carry information
-        while carry > 0 {
-            let new_digit = carry % 10;
-            new_digits.push(new_digit);
-            carry -= new_digit;
-            carry /= 10;
-        }
-
-        Number {
-            digits: new_digits
-        }
-    }
-}
+use projecteuler::util::digitalnumber::DigitalNumber;
+use std::str::FromStr;
 
 fn main() {
     let input: Vec<&str> = vec![
@@ -159,15 +106,16 @@ fn main() {
         "20849603980134001723930671666823555245252804609722",
         "53503534226472524250874054075591789781264330331690",
     ];
-    let mut sum = Number::new("");
+    let mut sum = DigitalNumber::new();
     for s in input.iter() {
-        let number = Number::new(s);
-        sum = sum.add_number(&number);
+        let number = DigitalNumber::from_str(*s).unwrap();
+        sum += number;
     }
     print!("The first ten digits of the sum of all the 50-digit numbers is: ");
+    let digits = sum.get_digits();
     for i in 0..=9 {
-        let index = sum.digits.len() - 1 - i;
-        print!("{}", sum.digits[index]);
+        let index = digits.len() - 1 - i;
+        print!("{}", digits[index]);
     }
-    println!("");
+    println!();
 }
