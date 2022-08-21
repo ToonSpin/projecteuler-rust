@@ -9,10 +9,8 @@ fn is_product_of_3d_pair(n: u32) -> bool {
     let upper_bound = (n as f32).sqrt().ceil() as u32;
     let mut factor = 100;
     while factor <= upper_bound {
-        if n % factor == 0 {
-            if n / factor < 1000 && n / factor >= 100 {
-                return true;
-            }
+        if n % factor == 0 && n / factor < 1000 && n / factor >= 100 {
+            return true;
         }
         factor += 1;
     }

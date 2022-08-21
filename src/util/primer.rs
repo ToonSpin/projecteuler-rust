@@ -5,6 +5,12 @@ pub struct Primer<T: UnsignedInt> {
     iter_index: usize,
 }
 
+impl<T: UnsignedInt> Default for Primer<T> {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl<T: UnsignedInt> Primer<T> {
     pub fn new() -> Primer<T> {
         Primer {
@@ -13,7 +19,7 @@ impl<T: UnsignedInt> Primer<T> {
         }
     }
 
-    fn prime_test_against_vec(n: T, primes: &Vec<T>) -> bool {
+    fn prime_test_against_slice(n: T, primes: &[T]) -> bool {
         for p in primes.iter() {
             if *p * *p > n {
                 break;
@@ -30,12 +36,12 @@ impl<T: UnsignedInt> Primer<T> {
         let mut next_prime: T = 5.into();
 
         while next_prime <= max_value {
-            if Self::prime_test_against_vec(next_prime, &primes) {
+            if Self::prime_test_against_slice(next_prime, &primes) {
                 primes.push(next_prime);
             }
             next_prime = next_prime + 2.into();
 
-            if Self::prime_test_against_vec(next_prime, &primes) {
+            if Self::prime_test_against_slice(next_prime, &primes) {
                 primes.push(next_prime);
             }
             next_prime = next_prime + 4.into();
@@ -48,10 +54,10 @@ impl<T: UnsignedInt> Primer<T> {
     }
 
     pub fn get_primes(self) -> Vec<T> {
-        self.primes.clone()
+        self.primes
     }
 
-    pub fn reset(&mut self) -> () {
+    pub fn reset(&mut self) {
         self.iter_index = 0;
     }
 
@@ -67,7 +73,7 @@ impl<T: UnsignedInt> std::iter::Iterator for Primer<T> {
         let result = if self.iter_index < self.primes.len() {
             self.primes[self.iter_index]
         } else {
-            let next_prime = if self.primes.len() == 0 {
+            let next_prime = if self.primes.is_empty() {
                 2.into()
             } else if self.primes.len() == 1 {
                 3.into()
@@ -80,7 +86,7 @@ impl<T: UnsignedInt> std::iter::Iterator for Primer<T> {
                         candidate = candidate + 2.into();
                     }
 
-                    if Self::prime_test_against_vec(candidate, &self.primes) {
+                    if Self::prime_test_against_slice(candidate, &self.primes) {
                         break;
                     }
                 }

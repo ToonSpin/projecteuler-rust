@@ -28,7 +28,7 @@ fn main() {
                 n /= *p;
             }
 
-            let current_min_factor = min_factors.get(&*p).unwrap();
+            let current_min_factor = min_factors.get(p).unwrap();
             if *current_min_factor < count {
                 min_factors.insert(*p, count);
             }

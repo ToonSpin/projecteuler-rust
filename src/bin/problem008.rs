@@ -20,8 +20,8 @@ fn main() {
     for v in split_sequence {
         let mut running_total = 1;
 
-        for i in 0..DIGIT_COUNT {
-            running_total *= v[i];
+        for digit in v.iter().take(DIGIT_COUNT) {
+            running_total *= digit;
         }
 
         if running_total > max_product {
