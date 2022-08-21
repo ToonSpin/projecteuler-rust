@@ -85,10 +85,10 @@ impl std::ops::AddAssign<DigitalNumber> for DigitalNumber {
     }
 }
 
-impl std::ops::Add<DigitalNumber> for DigitalNumber {
+impl std::ops::Add<&DigitalNumber> for DigitalNumber {
     type Output = Self;
 
-    fn add(self, rhs: DigitalNumber) -> Self {
+    fn add(self, rhs: &DigitalNumber) -> Self {
         let mut new_digits = Vec::new();
         let lhs_digits;
         let rhs_digits;
@@ -114,5 +114,12 @@ impl std::ops::Add<DigitalNumber> for DigitalNumber {
         new_digits = Self::carry_digits(&new_digits);
 
         DigitalNumber { digits: new_digits }
+    }
+}
+
+impl std::ops::Add<DigitalNumber> for DigitalNumber {
+    type Output = Self;
+    fn add(self, rhs: DigitalNumber) -> Self {
+        return self + &rhs;
     }
 }
