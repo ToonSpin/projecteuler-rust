@@ -90,15 +90,21 @@ impl std::ops::Add<DigitalNumber> for DigitalNumber {
 
     fn add(self, rhs: DigitalNumber) -> Self {
         let mut new_digits = Vec::new();
+        let lhs_digits;
+        let rhs_digits;
 
-        // make sure self has as least as many elements as rhs
+        // make sure lhs_digits has as least as many elements as rhs_digits
         if self.digits.len() < rhs.digits.len() {
-            return rhs + self;
+            lhs_digits = &rhs.digits;
+            rhs_digits = &self.digits;
+        } else {
+            lhs_digits = &self.digits;
+            rhs_digits = &rhs.digits;
         }
 
         // simply add the numbers
-        for (i, digit) in self.digits.iter().enumerate() {
-            let rhs_digit: u8 = match rhs.digits.get(i) {
+        for (i, digit) in lhs_digits.iter().enumerate() {
+            let rhs_digit: u8 = match rhs_digits.get(i) {
                 Some(&d) => d,
                 None => 0,
             };
