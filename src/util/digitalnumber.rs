@@ -1,6 +1,5 @@
+use crate::util::UnsignedInt;
 use std::collections::VecDeque;
-use std::convert::TryInto;
-use std::fmt::Debug;
 use std::num::ParseIntError;
 use std::str::FromStr;
 
@@ -65,20 +64,14 @@ impl FromStr for DigitalNumber {
 
 impl<T> From<T> for DigitalNumber
 where
-    T: From<u8>
-        + TryInto<u8>
-        + Copy
-        + std::cmp::PartialOrd
-        + std::ops::Rem<Output = T>
-        + std::ops::Sub<Output = T>
-        + std::ops::Div<Output = T>,
-    <T as TryInto<u8>>::Error: Debug,
+    T: UnsignedInt + std::ops::Sub<Output = T>,
+    u8: From<T>
 {
     fn from(mut n: T) -> DigitalNumber {
         let mut digits: Vec<u8> = Vec::new();
         while n > T::from(0) {
             let new_digit: T = n % T::from(10u8);
-            digits.push(new_digit.try_into().unwrap());
+            digits.push(new_digit.into());
             n = (n - new_digit) / T::from(10u8);
         }
         DigitalNumber { digits }
