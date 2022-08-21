@@ -1,3 +1,4 @@
+use std::fmt::Debug;
 use crate::util::UnsignedInt;
 use std::collections::VecDeque;
 use std::num::ParseIntError;
@@ -23,24 +24,28 @@ impl DigitalNumber {
         self.digits.clone()
     }
 
-    fn carry_digits(digits: &[u8]) -> Vec<u8> {
-        let mut new_digits = Vec::new();
+    fn carry_digits<T>(digits: &[T]) -> Vec<u8>
+    where
+        T: UnsignedInt + TryInto<u8>,
+        <T as TryInto<u8>>::Error: Debug
+    {
+        let mut new_digits: Vec<u8> = Vec::new();
 
         // make the digits carry over for all digits > 9
-        let mut carry = 0;
+        let mut carry: T = (0).into();
         for digit in digits.iter() {
-            let total = *digit + carry;
-            let new_digit = total % 10;
-            new_digits.push(new_digit);
-            carry = (total - new_digit) / 10;
+            let total: T = *digit + carry;
+            let new_digit: T = total % (10.into());
+            new_digits.push(new_digit.try_into().unwrap());
+            carry = (total - new_digit) / (10.into());
         }
 
         // add any "leftover" carry information
-        while carry > 0 {
-            let new_digit = carry % 10;
-            new_digits.push(new_digit);
-            carry -= new_digit;
-            carry /= 10;
+        while carry > (0).into() {
+            let new_digit: T = carry % (10.into());
+            new_digits.push(new_digit.try_into().unwrap());
+            carry = carry - new_digit;
+            carry = carry / 10.into();
         }
 
         new_digits
@@ -64,7 +69,7 @@ impl FromStr for DigitalNumber {
 
 impl<T> From<T> for DigitalNumber
 where
-    T: UnsignedInt + std::ops::Sub<Output = T>,
+    T: UnsignedInt,
     u8: From<T>
 {
     fn from(mut n: T) -> DigitalNumber {
@@ -121,5 +126,22 @@ impl std::ops::Add<DigitalNumber> for DigitalNumber {
     type Output = Self;
     fn add(self, rhs: DigitalNumber) -> Self {
         return self + &rhs;
+    }
+}
+
+impl<T> std::ops::Mul<T> for DigitalNumber
+where
+    T: UnsignedInt + TryInto<u8>,
+    <T as TryInto<u8>>::Error: Debug
+{
+    type Output = Self;
+    fn mul(self, rhs: T) -> Self {
+        let mut multiplied_digits: Vec<T> = Vec::new();
+        for digit in self.digits.iter() {
+            multiplied_digits.push(T::from(*digit) * rhs);
+        }
+        DigitalNumber {
+            digits: Self::carry_digits(&multiplied_digits)
+        }
     }
 }

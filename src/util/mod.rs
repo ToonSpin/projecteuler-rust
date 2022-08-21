@@ -6,6 +6,7 @@ pub trait UnsignedInt:
     From<u8>
     + PartialOrd
     + std::ops::Add<Output = Self>
+    + std::ops::Sub<Output = Self>
     + std::ops::Mul<Output = Self>
     + std::ops::Div<Output = Self>
     + std::ops::Rem<Output = Self>
@@ -23,6 +24,7 @@ pub trait Int:
     From<u8>
     + PartialOrd
     + std::ops::Add<Output = Self>
+    + std::ops::Sub<Output = Self>
     + std::ops::Mul<Output = Self>
     + std::ops::Div<Output = Self>
     + std::ops::Rem<Output = Self>
