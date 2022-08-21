@@ -24,10 +24,6 @@ impl DigitalNumber {
         self.digits.clone()
     }
 
-    fn carry(&mut self) {
-        self.digits = Self::carry_digits(&self.digits)
-    }
-
     fn carry_digits(digits: &[u8]) -> Vec<u8> {
         let mut new_digits = Vec::new();
 
