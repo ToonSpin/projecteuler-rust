@@ -24,6 +24,10 @@ impl DigitalNumber {
         self.digits.clone()
     }
 
+    pub fn count_digits(&self) -> usize {
+        self.digits.len()
+    }
+
     fn carry_digits<T>(digits: &[T]) -> Vec<u8>
     where
         T: UnsignedInt + TryInto<u8>,
