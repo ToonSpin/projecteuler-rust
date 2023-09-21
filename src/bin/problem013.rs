@@ -109,7 +109,7 @@ fn main() {
     let mut sum = DigitalNumber::new();
     for s in input.iter() {
         let number = DigitalNumber::from_str(*s).unwrap();
-        sum += number;
+        sum += &number;
     }
     print!("The first ten digits of the sum of all the 50-digit numbers is: ");
     let digits = sum.get_digits();

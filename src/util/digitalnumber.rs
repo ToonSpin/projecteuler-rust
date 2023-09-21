@@ -20,6 +20,14 @@ impl DigitalNumber {
         Self { digits: Vec::new() }
     }
 
+    fn strip_zeroes(digits: &[u8]) -> Vec<u8> {
+        let mut new_len = digits.len();
+        while new_len > 0 && digits[new_len - 1] == 0.into() {
+            new_len -= 1;
+        }
+        digits[0..new_len].into()
+    }
+
     pub fn get_digits(&self) -> Vec<u8> {
         self.digits.clone()
     }
@@ -87,8 +95,8 @@ where
     }
 }
 
-impl std::ops::AddAssign<DigitalNumber> for DigitalNumber {
-    fn add_assign(&mut self, rhs: DigitalNumber) {
+impl std::ops::AddAssign<&DigitalNumber> for DigitalNumber {
+    fn add_assign(&mut self, rhs: &DigitalNumber) {
         let sum = self.clone() + rhs;
         self.digits = sum.digits;
     }
@@ -130,6 +138,67 @@ impl std::ops::Add<DigitalNumber> for DigitalNumber {
     type Output = Self;
     fn add(self, rhs: DigitalNumber) -> Self {
         return self + &rhs;
+    }
+}
+
+impl std::ops::SubAssign<&DigitalNumber> for DigitalNumber {
+    fn sub_assign(&mut self, rhs: &DigitalNumber) {
+        let sum = self.clone() - rhs;
+        self.digits = sum.digits;
+    }
+}
+
+impl std::ops::Sub<&DigitalNumber> for DigitalNumber {
+    type Output = Self;
+
+    fn sub(self, rhs: &DigitalNumber) -> Self {
+        let mut new_digits_signed = Vec::new();
+
+        let lhs_digits;
+        let rhs_digits;
+
+        // make sure lhs_digits has as least as many elements as rhs_digits
+        if self.digits.len() < rhs.digits.len() {
+            lhs_digits = &rhs.digits;
+            rhs_digits = &self.digits;
+        } else {
+            lhs_digits = &self.digits;
+            rhs_digits = &rhs.digits;
+        }
+
+        // simply subtract the numbers
+        for (i, digit) in lhs_digits.iter().enumerate() {
+            let rhs_digit: u8 = match rhs_digits.get(i) {
+                Some(&d) => d,
+                None => 0,
+            };
+            new_digits_signed.push(*digit as i8 - rhs_digit as i8);
+        }
+
+        // carry the negative digits
+        for index in 0..new_digits_signed.len() {
+            let digit = new_digits_signed[index];
+            if digit < 0 {
+                if index == new_digits_signed.len() - 1 {
+                    panic!("Attempt to subtract with underflow");
+                }
+                new_digits_signed[index] += 10;
+                new_digits_signed[index + 1] -= 1;
+            }
+        }
+
+        let new_digits: Vec<u8> = new_digits_signed.iter().map(|&i| i.try_into().unwrap()).collect();
+        let new_digits = Self::carry_digits(&new_digits);
+        let new_digits = Self::strip_zeroes(&new_digits);
+
+        DigitalNumber { digits: new_digits }
+    }
+}
+
+impl std::ops::Sub<DigitalNumber> for DigitalNumber {
+    type Output = Self;
+    fn sub(self, rhs: DigitalNumber) -> Self {
+        return self - &rhs;
     }
 }
 
