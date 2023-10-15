@@ -120,3 +120,21 @@ pub fn prime_factorization<T: UnsignedInt>(mut n: T, primer: &mut Primer<T>) -> 
     }
     v
 }
+
+pub fn get_all_factors_from_prime_factors<T: UnsignedInt>(factors: &Vec<(T, usize)>) -> Vec<T> {
+    let mut result: Vec<T> = vec![1.into()];
+    for (factor, count) in factors.iter() {
+        let mut current = 1.into();
+        let mut new_result = Vec::new();
+
+        for _ in 0..=*count {
+            for n in result.iter() {
+                new_result.push(*n * current);
+            }
+            current = current * *factor;
+        }
+
+        result = new_result;
+    }
+    result
+}
