@@ -62,6 +62,13 @@ impl DigitalNumber {
 
         new_digits
     }
+
+    pub fn increment(&mut self) {
+        self.digits[0] += 1;
+        if self.digits[0] > 9 {
+            self.digits = Self::carry_digits(&self.digits);
+        }
+    }
 }
 
 impl FromStr for DigitalNumber {
